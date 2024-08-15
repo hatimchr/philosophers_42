@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/08/05 00:36:30 by hchair           ###   ########.fr       */
+/*   Updated: 2024/08/10 18:10:23 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	ft_atoi(const char *str)
 		rst = (rst + (str[i] - '0'));
 		if (str[i + 1] >= 48 && str[i + 1] <= 57)
 			rst = rst * 10;
-		else if (!(str[i + 1] >= 48 && str[i + 1] <= 57) && str[i + 1] != '\0')
+		else if (str[i + 1] != '\0' && !(str[i + 1] >= 48 && str[i + 1] <= 57))
 			return (-2);
 		i += 1;
 	}
