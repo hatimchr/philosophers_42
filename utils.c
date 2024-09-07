@@ -6,11 +6,13 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/09/07 16:11:38 by hchair           ###   ########.fr       */
+/*   Updated: 2024/09/07 16:53:52 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
+
+t_philo	philo;
 
 int	ft_atoi(const char *str)
 {
@@ -57,10 +59,14 @@ int	ft_strlen(char *str)
 void *routine()
 {
     // I'll be back for you
-     // Implement the philosopher's actions here
+     while (!philo->menu->end_simulation) {
+        // Implement the philosopher's actions here
         // Pick up the forks
         // Eat
         // Put down the forks
         // Sleep
         // Think
+    }
+
+    return NULL;
 }

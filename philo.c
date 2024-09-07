@@ -61,4 +61,9 @@ int main(int ac, char **av)
         }
         i++;
     }
+    for ( i = 0; i < table.total; i++)
+    {
+         if (pthread_join(&table.philos[i], NULL))
+            return (1);
+    }
 }
