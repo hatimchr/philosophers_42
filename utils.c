@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/08/10 18:10:23 by hchair           ###   ########.fr       */
+/*   Updated: 2024/09/07 16:11:38 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,3 +54,13 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
+void *routine()
+{
+    // I'll be back for you
+     // Implement the philosopher's actions here
+        // Pick up the forks
+        // Eat
+        // Put down the forks
+        // Sleep
+        // Think
+}

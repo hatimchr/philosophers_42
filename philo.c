@@ -23,7 +23,7 @@ int main(int ac, char **av)
             printf("try somthing like./philo 000 000 000 000 [0]\n");
             exit (0);
         }
-    // start to fill our info and creat the philosophers
+    // start to fill  info and creat the philosophers
     table.end_simulation = false;
     table.philos = malloc(sizeof(t_philo) * table.total);
     if (table.philos == NULL)
@@ -47,5 +47,18 @@ int main(int ac, char **av)
     for (i = 0; i < table.total; i++) {
         pthread_mutex_init(&table.forks[i].fork, NULL);
         table.forks[i].fork_id = i;
+        table.philos[i].left_fork = &table.forks[i];
+        table.philos[i].right_fork = &table.forks[(i + 1) % table.total];
+    }
+    // creat threads
+    i = 0;
+    while (i <  table.total)
+    {
+        if (pthread_create(&table.philos[i].thread_id, NULL, &routine, &table.philos[i]) != 0)
+        {
+            perror("thread creation failed");
+            return (0);
+        }
+        i++;
     }
 }
