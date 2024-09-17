@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/09/17 21:16:21 by hchair           ###   ########.fr       */
+/*   Updated: 2024/09/17 22:51:35 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,47 +56,46 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-int	fork_is_avalaible(t_philo philo)
+int	fork_is_avalaible(t_philo *philo)
 {
-	if (pthread_mutex_lock(&philo.left_fork->fork) != 0)
+	if (pthread_mutex_lock(&philo->left_fork->fork) != 0)
+		return (0);
+	printf("%d has taken a fork", philo->id); 
+	if (pthread_mutex_lock(&philo->right_fork->fork) != 0)
 	{
-		printf("%d has taken a fork", philo.id); 
+		pthread_mutex_unlock(&philo->left_fork->fork);
+		printf("%d has relased a fork", philo->id); 
 		return (0);
 	}
-	if (pthread_mutex_lock(&philo.right_fork->fork) != 0)
-	{
-		pthread_mutex_unlock(&philo.left_fork->fork);
-		printf("%d has relased a fork", philo.id); 
-		return (0);
-	}
+	printf("%d has taken a fork", philo->id); 
 	return (1);
 }
 
-void	release_fork(t_philo philo)
+void	release_fork(t_philo *philo)
 {
-	pthread_mutex_unlock(&philo.left_fork->fork);
-	printf("%d has relased a fork", philo.id); 
-	pthread_mutex_unlock(&philo.right_fork->fork);
-	printf("%d has relased a fork", philo.id); 
+	pthread_mutex_unlock(&philo->left_fork->fork);
+	printf("%d has relased a fork\n", philo->id); 
+	pthread_mutex_unlock(&philo->right_fork->fork);
+	printf("%d has relased a fork\n", philo->id); 
 }
 
-void *routine()
+void *routine(t_philo *philo)
 {
     // I'll be back for you
-    while (!philo.menu->end_simulation)
+    while (!philo->menu->end_simulation)
 	{
         // Implement the philosopher's actions here
         // Pick up the forks
-		if (fork_is_avalaible(philo))
-		{
-			/* code */
-		}
 		
+		// printf("ready to eat\n");
+		if (fork_is_avalaible(philo) != 0)
+		{
+			printf("ready to eat\n");
+		}
         // Eat
         // Put down the forks
         // Sleep
         // Think
     }
-
     return NULL;
 }
