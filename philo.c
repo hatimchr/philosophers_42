@@ -63,7 +63,10 @@ int main(int ac, char **av)
     }
     for ( i = 0; i < table.total; i++)
     {
-         if (pthread_join(&table.philos[i], NULL))
+         if (pthread_join(table.philos[i].thread_id, NULL) != 0)
+        {
+            perror("pthread join failed");
             return (1);
+        }
     }
 }

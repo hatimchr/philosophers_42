@@ -28,7 +28,7 @@ typedef	struct s_phio
 	int			id;
 	t_fork		*left_fork;
 	t_fork		*right_fork;
-	pthread_t	thread_id;// aka our philosopher
+	pthread_t	thread_id;// aka our philosopher number
 	t_table		*menu;
 }				t_philo;
 
@@ -46,12 +46,12 @@ struct s_var
 	t_fork	*forks; // array of forks 
 };
 
-int	ft_atoi(const char *str);
-int	ft_printf(const char *src, ...);
-int	ft_strlen(char *str);
-int	ft_putnbr(int n);
-int	ft_putchar(char c);
-int	ft_putstr(char *s);
-void *routine();
+int		ft_atoi(const char *str);
+int		ft_printf(const char *src, ...);
+int		ft_strlen(char *str);
+int		ft_putnbr(int n);
+int		ft_putchar(char c);
+int		ft_putstr(char *s);
+void	*routine();
 
 #endif

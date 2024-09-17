@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/09/08 17:15:28 by hchair           ###   ########.fr       */
+/*   Updated: 2024/09/17 21:16:21 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,14 @@ int	ft_strlen(char *str)
 int	fork_is_avalaible(t_philo philo)
 {
 	if (pthread_mutex_lock(&philo.left_fork->fork) != 0)
+	{
+		printf("%d has taken a fork", philo.id); 
 		return (0);
+	}
 	if (pthread_mutex_lock(&philo.right_fork->fork) != 0)
 	{
 		pthread_mutex_unlock(&philo.left_fork->fork);
+		printf("%d has relased a fork", philo.id); 
 		return (0);
 	}
 	return (1);
@@ -71,7 +75,9 @@ int	fork_is_avalaible(t_philo philo)
 void	release_fork(t_philo philo)
 {
 	pthread_mutex_unlock(&philo.left_fork->fork);
+	printf("%d has relased a fork", philo.id); 
 	pthread_mutex_unlock(&philo.right_fork->fork);
+	printf("%d has relased a fork", philo.id); 
 }
 
 void *routine()
