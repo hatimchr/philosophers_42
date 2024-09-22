@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/09/22 21:17:05 by hchair            #+#    #+#             */
+/*   Updated: 2024/09/22 21:17:06 by hchair           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philosopher.h"
 
 int main(int ac, char **av)
@@ -31,7 +43,7 @@ int main(int ac, char **av)
         // initialise philos
     for (i = 0; i < table.total; i++) 
     {
-        table.philos[i].id = i;
+        table.philos[i].id = i + 1;
         table.philos[i].left_fork = &table.forks[i];
         table.philos[i].right_fork = &table.forks[(i + 1) % table.total];
         // /gettimeofday(&table.philos[i].last_meal, NULL);

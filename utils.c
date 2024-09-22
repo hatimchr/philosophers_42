@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/09/19 01:48:17 by hchair           ###   ########.fr       */
+/*   Updated: 2024/09/22 21:21:03 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,18 +56,19 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-int fork_is_avalaible(t_philo *philo) {
-    if (pthread_mutex_lock(&philo->left_fork->fork) != 0)
-        return 0;
+int fork_is_avalaible(t_philo *philo) 
+{
+	if (pthread_mutex_lock(&philo->left_fork->fork) != 0)
+	return 0;
     // printf("%d has taken a left fork\n", philo->id);
 
-    if (pthread_mutex_lock(&philo->right_fork->fork) != 0) {
-        pthread_mutex_unlock(&philo->left_fork->fork);
+    if (pthread_mutex_lock(&philo->right_fork->fork) != 0) 
+	{
+		pthread_mutex_unlock(&philo->left_fork->fork);
         // printf("%d has released a fork\n", philo->id);
         return 0;
     }
-
-    // printf("%d has taken a right fork\n", philo->id);
+	
     return 1;
 }
 
@@ -81,27 +82,28 @@ void	release_fork(t_philo *philo)
 
 void *routine(t_philo *philo)
 {
+	if (philo->id % 2)
+	{
+		// printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
+		usleep(philo->menu->sleep);
+	}
     // I'll be back for you
     while (!philo->menu->end_simulation)
 	{
-        // Implement the philosopher's actions here
-        // Pick up the forks
-		if (philo->id % 2)
-		{
-			usleep(philo->menu->sleep);
-			printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
-		}
-		
-		// printf("ready to eat\n");
+        // Implement the philosopher's actions here	
+		// Pick up the forks
 		if (fork_is_avalaible(philo) != 0)
 		{
-			printf("%d is ready to eat\n", philo->id);
-			usleep(philo->menu->eat);
 			printf("\033[0;32m%d is eating\033[0m\n", philo->id);
-			release_fork(philo);
+			usleep(philo->menu->eat); // eating
+			release_fork(philo); // Put down the forks
 		}
-        // Eat
-        // Put down the forks
+        // Sleep
+		if (!(philo->id % 2))
+		{
+			printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
+			usleep(philo->menu->sleep);
+		}
 		// verify end simulation
 		if ((philo->menu->meal_limit) 
 			&& philo->meal_cnt++ >= philo->menu->meal_limit)
@@ -110,13 +112,8 @@ void *routine(t_philo *philo)
 			printf("\033[0;31mend simulation\033[0m\n");
 			exit (0);
 		}
-        // Sleep
-		if (!(philo->id % 2))
-		{
-			usleep(philo->menu->sleep);
-			printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
-		}
         // Think
+		printf("\033[0;33m%d is thinking \033[0;33m\n", philo->id);
     }
     return NULL;
 }
