@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:05 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/07 17:04:10 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/07 19:58:24 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int main(int ac, char **av)
     }
     for ( i = 0; i < table.total; i++)
     {
-        printf("went in %d\n ", i);
+        printf("went in %d\n", i);
          if (pthread_join(table.philos[i].thread_id, NULL) != 0)
         {
             perror("pthread join failed");

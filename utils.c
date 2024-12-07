@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/07 18:55:57 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/07 20:27:34 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ int	ft_strlen(char *str)
 int fork_is_avalaible(t_philo *philo) 
 {
 	if (pthread_mutex_lock(&philo->left_fork->fork) != 0)
-	return 0;
     // printf("%d has taken a left fork\n", philo->id);
+	return 0;
 
     if (pthread_mutex_lock(&philo->right_fork->fork) != 0) 
 	{
@@ -82,6 +82,16 @@ void	release_fork(t_philo *philo)
 
 void *routine(t_philo *philo)
 {
+	if (philo->menu->total == 1)
+	{
+		if (pthread_mutex_lock(&philo->left_fork->fork) != 0)
+		printf("%d has taken a left fork\n", philo->id);
+		usleep(philo->menu->death);
+		pthread_mutex_unlock(&philo->left_fork->fork);
+		return 0;
+		/* code */
+	}
+	
 	if (philo->id % 2)
 	{
 		printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
@@ -94,9 +104,16 @@ void *routine(t_philo *philo)
 		// Pick up the forks
 		if (fork_is_avalaible(philo) != 0)
 		{
-			printf("\033[0;32m%d is eating for %d-th time\033[0m\n", philo->id, philo->meal_cnt);
+			printf("\033[0;32m%d is eating for %ld-th time\033[0m\n", philo->id, philo->meal_cnt);
 			usleep(philo->menu->eat); // eating
 			release_fork(philo); // Put down the forks
+			if ((philo->menu->meal_limit) 
+				&& philo->meal_cnt++ >= philo->menu->meal_limit)
+			{
+				philo->menu->end_simulation = true;
+				printf("\033[0;31mend simulation\033[0m\n");
+				exit (0);
+			}
 		}
         // Sleep
 		// if (!(philo->id % 2))
@@ -105,13 +122,6 @@ void *routine(t_philo *philo)
 			usleep(philo->menu->sleep);
 		// }
 		// verify end simulation
-		if ((philo->menu->meal_limit) 
-			&& philo->meal_cnt++ >= philo->menu->meal_limit)
-		{
-			philo->menu->end_simulation = true;
-			printf("\033[0;31mend simulation\033[0m\n");
-			exit (0);
-		}
         // Think
 		printf("\033[0;33m%d is thinking \033[0;33m\n", philo->id);
     }
