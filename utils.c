@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/09/22 21:21:03 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/07 18:55:57 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@ int fork_is_avalaible(t_philo *philo)
 
 void	release_fork(t_philo *philo)
 {
-	pthread_mutex_unlock(&philo->left_fork->fork);
 	// printf("%d has relased a fork\n", philo->id); 
+	pthread_mutex_unlock(&philo->left_fork->fork);
 	pthread_mutex_unlock(&philo->right_fork->fork);
 	// printf("%d has relased a fork\n", philo->id); 
 }
@@ -84,7 +84,7 @@ void *routine(t_philo *philo)
 {
 	if (philo->id % 2)
 	{
-		// printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
+		printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
 		usleep(philo->menu->sleep);
 	}
     // I'll be back for you
@@ -94,16 +94,16 @@ void *routine(t_philo *philo)
 		// Pick up the forks
 		if (fork_is_avalaible(philo) != 0)
 		{
-			printf("\033[0;32m%d is eating\033[0m\n", philo->id);
+			printf("\033[0;32m%d is eating for %d-th time\033[0m\n", philo->id, philo->meal_cnt);
 			usleep(philo->menu->eat); // eating
 			release_fork(philo); // Put down the forks
 		}
         // Sleep
-		if (!(philo->id % 2))
-		{
+		// if (!(philo->id % 2))
+		// {
 			printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
 			usleep(philo->menu->sleep);
-		}
+		// }
 		// verify end simulation
 		if ((philo->menu->meal_limit) 
 			&& philo->meal_cnt++ >= philo->menu->meal_limit)
