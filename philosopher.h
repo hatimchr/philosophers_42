@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:12 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/07 16:45:09 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/11 13:59:47 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,15 @@ typedef	struct s_fork
 
 typedef	struct s_phio
 {
-	long		meal_cnt;
-	long		last_meal; // siince when I did not eat 
-	bool		full; // meal count match meals limit
-	int			id;
-	t_fork		*left_fork;
-	t_fork		*right_fork;
-	pthread_t	thread_id;// aka our philosopher number
-	t_table		*menu;
+	long			meal_cnt;
+	long			last_meal; // siince when I did not eat 
+	bool			full; // meal count match meals limit
+	int				id;
+	t_fork			*left_fork;
+	t_fork			*right_fork;
+	pthread_t		thread_id;// aka our philosopher number
+	t_table			*menu;
+	pthread_mutex_t	print_mutex;
 }				t_philo;
 
 struct s_var

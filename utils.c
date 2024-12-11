@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/07 20:27:34 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/11 16:46:46 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,36 +82,29 @@ void	release_fork(t_philo *philo)
 
 void *routine(t_philo *philo)
 {
-	if (philo->menu->total == 1)
-	{
-		if (pthread_mutex_lock(&philo->left_fork->fork) != 0)
-		printf("%d has taken a left fork\n", philo->id);
-		usleep(philo->menu->death);
-		pthread_mutex_unlock(&philo->left_fork->fork);
-		return 0;
-		/* code */
-	}
-	
+	static int i;
 	if (philo->id % 2)
 	{
 		printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
 		usleep(philo->menu->sleep);
 	}
     // I'll be back for you
-    while (!philo->menu->end_simulation)
+    while (!philo->menu->end_simulation && !i)
 	{
         // Implement the philosopher's actions here	
 		// Pick up the forks
-		if (fork_is_avalaible(philo) != 0)
+		if (fork_is_avalaible(philo) != 0 && !i)
 		{
 			printf("\033[0;32m%d is eating for %ld-th time\033[0m\n", philo->id, philo->meal_cnt);
 			usleep(philo->menu->eat); // eating
 			release_fork(philo); // Put down the forks
 			if ((philo->menu->meal_limit) 
-				&& philo->meal_cnt++ >= philo->menu->meal_limit)
+				&& philo->meal_cnt++ > philo->menu->meal_limit)
 			{
 				philo->menu->end_simulation = true;
+				i = pthread_mutex_lock(&philo->print_mutex);
 				printf("\033[0;31mend simulation\033[0m\n");
+				pthread_mutex_unlock(&philo->print_mutex);
 				exit (0);
 			}
 		}

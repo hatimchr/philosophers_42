@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:05 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/07 19:58:24 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/11 16:41:38 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,21 @@ int main(int ac, char **av)
         table.philos[i].left_fork = &table.forks[i];
         table.philos[i].right_fork = &table.forks[(i + 1) % table.total];
     }
+    pthread_mutex_init(&table.philos->print_mutex, NULL);
     // creat threads
     i = 0;
+    if (table.total == 1)
+    {
+        // if (pthread_mutex_lock(&table.philos[i].left_fork->fork) != 0)
+        // {
+            printf("%d has taken a left fork\n", table.philos[i].id);
+            usleep(table.death);
+            pthread_mutex_unlock(&table.philos[i].left_fork->fork);
+            printf("\033[0;31m1 died\033[0m\n");
+        // }
+        return 0;
+        /* code */
+    }
     while (i <  table.total)
     {
         if (pthread_create(&table.philos[i].thread_id, NULL, &routine, &table.philos[i]) != 0)
@@ -75,6 +88,7 @@ int main(int ac, char **av)
         i++;
         usleep(100);
     }
+    pthread_mutex_destroy(&table.philos->print_mutex);
     for ( i = 0; i < table.total; i++)
     {
         printf("went in %d\n", i);
@@ -84,4 +98,5 @@ int main(int ac, char **av)
             return (1);
         }
     }
+    
 }
