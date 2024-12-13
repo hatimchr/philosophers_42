@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/12 14:14:02 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/13 20:18:04 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,22 @@ int fork_is_avalaible(t_philo *philo)
     return 1;
 }
 
+int print_is_avalaible(t_philo *philo) 
+{
+	if (pthread_mutex_lock(&philo->print_mutex) != 0)
+    // printf("%d has taken a left fork\n", philo->id);
+		return 0;
+
+    // if (pthread_mutex_lock(&philo->right_fork->fork) != 0) 
+	// {
+	// 	pthread_mutex_unlock(&philo->left_fork->fork);
+    //     // printf("%d has released a fork\n", philo->id);
+    //     return 0;
+    // }
+	
+    return 1;
+}
+
 void	release_fork(t_philo *philo)
 {
 	// printf("%d has relased a fork\n", philo->id); 
@@ -90,15 +106,53 @@ t_time	ft_get_time(void)
 	return (time);
 }
 
+void	philo_printer(t_philo *philo, int indx)
+{
+	// while (print_is_avalaible(philo) == 0)
+	// {
+	// }
+	
+	// if (!pthread_mutex_lock(&philo->print_mutex))
+	// {
+		if (indx == 1)
+		{
+			printf("\033[0;34m%lld %d is sleeping\033[0m\n", ft_get_time() - philo->simulation_start, philo->id);
+			usleep(philo->menu->sleep);
+			/* code */
+		}
+		else if (indx == 2)
+		{
+			/* code */
+			printf("\033[0;32m%lld %d is eating for %ld-th time\033[0m\n", ft_get_time() - philo->simulation_start, philo->id, philo->meal_cnt);
+			usleep(philo->menu->eat); // eating
+		}
+		else if (indx == 3)
+		{
+			/* code */
+			printf("\033[0;34m%lld %d is sleeping\033[0m\n", ft_get_time() - philo->simulation_start, philo->id);
+			usleep(philo->menu->sleep);
+		}
+		else if (indx == 4)
+		{
+			/* code */
+			printf("\033[0;33m%lld %d is thinking \033[0;33m\n", ft_get_time() - philo->simulation_start, philo->id);
+		}
+		
+		// pthread_mutex_unlock(&philo->print_mutex);
+	// }
+}
+//lme3e9ol
+int	check_death(t_philo *philo)
+{
+	
+}
+
 void *routine(t_philo *philo)
 {
 	static int i;
 	
 	if (philo->id % 2)
-	{
-		printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
-		usleep(philo->menu->sleep);
-	}
+		philo_printer(philo, 1);
     // I'll be back for you
     while (!philo->menu->end_simulation && !i)
 	{
@@ -106,8 +160,7 @@ void *routine(t_philo *philo)
 		// Pick up the forks
 		if (fork_is_avalaible(philo) != 0 && !i)
 		{
-			printf("\033[0;32m%lld %d is eating for %ld-th time\033[0m\n", ft_get_time() - philo->simulation_start, philo->id, philo->meal_cnt);
-			usleep(philo->menu->eat); // eating
+			philo_printer(philo, 2);
 			release_fork(philo); // Put down the forks
 			if ((philo->menu->meal_limit) 
 				&& ++philo->meal_cnt == philo->menu->meal_limit)
@@ -122,12 +175,12 @@ void *routine(t_philo *philo)
         // Sleep
 		// if (!(philo->id % 2))
 		// {
-			printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
-			usleep(philo->menu->sleep);
+			// printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
+			philo_printer(philo, 3);
 		// }
 		// verify end simulation
         // Think
-		printf("\033[0;33m%d is thinking \033[0;33m\n", philo->id);
+			philo_printer(philo, 4);
     }
     return NULL;
 }
