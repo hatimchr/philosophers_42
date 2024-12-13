@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:12 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/11 13:59:47 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/12 13:58:07 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@
 /*
 ./philo 9 600 200 200 [5]
  */
-typedef struct s_var	t_table;
+
+typedef unsigned long long	t_time;
+
+typedef struct s_var		t_table;
 
 typedef	struct s_fork
 {
@@ -35,7 +38,8 @@ typedef	struct s_fork
 typedef	struct s_phio
 {
 	long			meal_cnt;
-	long			last_meal; // siince when I did not eat 
+	t_time			last_meal; // siince when I did not eat 
+	t_time			simulation_start;
 	bool			full; // meal count match meals limit
 	int				id;
 	t_fork			*left_fork;
@@ -53,7 +57,6 @@ struct s_var
 	long	think;
 	long	death;
 	long	meal_limit;
-	long	simulation_start;
 	bool	end_simulation; // a philo died or all of them are full
 	t_philo	*philos; // array of people who talk a lot
 	t_fork	*forks; // array of forks 
@@ -66,5 +69,6 @@ int		ft_putnbr(int n);
 int		ft_putchar(char c);
 int		ft_putstr(char *s);
 void	*routine();
+t_time	ft_get_time(void);
 
 #endif

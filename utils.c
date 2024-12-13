@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/11 16:46:46 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/12 14:14:02 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,20 @@ void	release_fork(t_philo *philo)
 	// printf("%d has relased a fork\n", philo->id); 
 }
 
+t_time	ft_get_time(void)
+{
+	struct timeval	tp;
+	t_time			time;
+
+	gettimeofday(&tp, NULL);
+	time = tp.tv_sec * 1000 + tp.tv_usec / 1000;
+	return (time);
+}
+
 void *routine(t_philo *philo)
 {
 	static int i;
+	
 	if (philo->id % 2)
 	{
 		printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
@@ -95,15 +106,15 @@ void *routine(t_philo *philo)
 		// Pick up the forks
 		if (fork_is_avalaible(philo) != 0 && !i)
 		{
-			printf("\033[0;32m%d is eating for %ld-th time\033[0m\n", philo->id, philo->meal_cnt);
+			printf("\033[0;32m%lld %d is eating for %ld-th time\033[0m\n", ft_get_time() - philo->simulation_start, philo->id, philo->meal_cnt);
 			usleep(philo->menu->eat); // eating
 			release_fork(philo); // Put down the forks
 			if ((philo->menu->meal_limit) 
-				&& philo->meal_cnt++ > philo->menu->meal_limit)
+				&& ++philo->meal_cnt == philo->menu->meal_limit)
 			{
 				philo->menu->end_simulation = true;
 				i = pthread_mutex_lock(&philo->print_mutex);
-				printf("\033[0;31mend simulation\033[0m\n");
+				printf("\033[0;31mend simulation in philo %d\033[0m\n", philo->id);
 				pthread_mutex_unlock(&philo->print_mutex);
 				exit (0);
 			}
