@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:12 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/12 13:58:07 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/14 21:52:08 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,20 @@ typedef	struct s_phio
 	t_fork			*right_fork;
 	pthread_t		thread_id;// aka our philosopher number
 	t_table			*menu;
-	pthread_mutex_t	print_mutex;
 }				t_philo;
 
 struct s_var
 {
-	long	total;
-	long	eat;
-	long	sleep;
-	long	think;
-	long	death;
-	long	meal_limit;
-	bool	end_simulation; // a philo died or all of them are full
-	t_philo	*philos; // array of people who talk a lot
-	t_fork	*forks; // array of forks 
+	pthread_mutex_t	print_mutex;		
+	long			total;
+	long			eat;
+	long			sleep;
+	long			think;
+	t_time			death;
+	long			meal_limit;
+	bool			end_simulation; // a philo died or all of them are full
+	t_philo			*philos; // array of people who talk a lot
+	t_fork			*forks; // array of forks 
 };
 
 int		ft_atoi(const char *str);

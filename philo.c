@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:05 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/12 14:13:05 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/14 22:47:13 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int main(int ac, char **av)
     if (ac < 5 || ac > 6)
         return (printf("invalid argument numbers \n"));
     table.total = ft_atoi(av[1]);
-    table.death = ft_atoi(av[2]);
+    table.death = (long long)ft_atoi(av[2]);
     table.eat = ft_atoi(av[3]);
     table.sleep = ft_atoi(av[4]);
     if (ac == 6)
@@ -39,6 +39,7 @@ int main(int ac, char **av)
     // start to fill  info and creat the philosophers
     table.end_simulation = false;
     table.philos = malloc(sizeof(t_philo) * table.total);
+    pthread_mutex_init(&table.print_mutex, NULL);
     if (table.philos == NULL)
         return (0);
         // initialise philos
@@ -64,7 +65,6 @@ int main(int ac, char **av)
         table.philos[i].right_fork = &table.forks[(i + 1) % table.total];
         table.philos[i].simulation_start = ft_get_time();
     }
-    pthread_mutex_init(&table.philos->print_mutex, NULL);
     // creat threads
     i = 0;
     if (table.total == 1)
@@ -89,7 +89,7 @@ int main(int ac, char **av)
         i++;
         usleep(100);
     }
-    pthread_mutex_destroy(&table.philos->print_mutex);
+    pthread_mutex_destroy(&table.print_mutex);
     for ( i = 0; i < table.total; i++)
     {
         printf("went in %d\n", i);
