@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/24 15:57:42 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/24 16:02:48 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,50 +106,31 @@ t_time	ft_get_time(void)
 	return (time);
 }
 
-void	philo_printer(t_philo *philo, int indx)
+void philo_printer(t_philo *philo, int indx)
 {
-	// while (print_is_avalaible(philo) == 0)
-	// {
-	// }
-	
-	if (!pthread_mutex_lock(&philo->menu->print_mutex))
-	{
-		if (indx == 2)
-		{
-			/* code */
-			printf("\033[0;32m%lld %lld %d is eating for %ld-th time\033[0m\n", ft_get_time() - philo->simulation_start, ft_get_time() - philo->last_meal, philo->id, philo->meal_cnt);
-			philo->last_meal = ft_get_time();
-			ft_philo_wait_time(philo, philo->menu->eat); // eating
-		}
-		else if (indx == 3)
-		{
-			/* code */
-			printf("\033[0;34m%lld %d is sleeping\033[0m\n", ft_get_time() - philo->simulation_start, philo->id);
-			ft_philo_wait_time(philo, philo->menu->sleep);
-		}
-		else if (indx == 4)
-		{
-			/* code */
-			printf("\033[0;33m%lld %d is thinking \033[0;33m\n", ft_get_time() - philo->simulation_start, philo->id);
-		}
-		else if (indx == 5)
-		{
-			/* code */
-			// pthread_mutex_lock(&philo->menu->print_mutex);
-			printf("\033[0;31mend simulation in philo %d\033[0m\n", philo->id);
-			return ;
-			// pthread_mutex_unlock(&philo->menu->print_mutex);
-		}
-		else if (indx == 6)
-		{
-			/* code */
-			// pthread_mutex_lock(&philo->menu->print_mutex);
-			printf("\033[0;31m philo %d died\033[0m\n", philo->id);
-			return ;
-			// pthread_mutex_unlock(&philo->menu->print_mutex);
-		}
-	pthread_mutex_unlock(&philo->menu->print_mutex);
-	}
+    if (!pthread_mutex_lock(&philo->menu->print_mutex))
+    {
+        if (philo->menu->end_simulation)
+        {
+            pthread_mutex_unlock(&philo->menu->print_mutex);
+            return;
+        }
+
+        if (indx == 1)
+            printf("%lld %d is thinking\n", ft_get_time() - philo->simulation_start, philo->id);
+        else if (indx == 2)
+            printf("%lld %d is eating\n", ft_get_time() - philo->simulation_start, philo->id);
+        else if (indx == 3)
+            printf("%lld %d is sleeping\n", ft_get_time() - philo->simulation_start, philo->id);
+        else if (indx == 4)
+            printf("%lld %d has taken a fork\n", ft_get_time() - philo->simulation_start, philo->id);
+        else if (indx == 5)
+            printf("%lld %d has reached the meal limit\n", ft_get_time() - philo->simulation_start, philo->id);
+        else if (indx == 6)
+            printf("\033[0;31m%lld %d died\033[0m\n", ft_get_time() - philo->simulation_start, philo->id);
+
+        pthread_mutex_unlock(&philo->menu->print_mutex);
+    }
 }
 //lme3e9ol
 int check_death(t_philo *philo)
