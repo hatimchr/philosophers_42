@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/24 22:31:17 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/24 22:37:17 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,6 @@ void philo_printer(t_philo *philo, int indx)
             printf("%lld %d is sleeping\n", ft_get_time() - philo->simulation_start, philo->id);
         else if (indx == 4)
             printf("%lld %d has taken a fork\n", ft_get_time() - philo->simulation_start, philo->id);
-        else if (indx == 5)
-            printf("%lld %d has reached the meal limit\n", ft_get_time() - philo->simulation_start, philo->id);
         else if (indx == 6)
             printf("\033[0;31m%lld %d died\033[0m\n", ft_get_time() - philo->simulation_start, philo->id);
 
@@ -186,7 +184,11 @@ void *routine(void *arg)
 
         // Philosopher is eating
         if (!check_death(philo))
+        {
+            pthread_mutex_unlock(&philo->right_fork->fork);
+            pthread_mutex_unlock(&philo->left_fork->fork);
             break;
+        }
         philo_printer(philo, 2);
         philo->meal_cnt++;
         philo->last_meal = ft_get_time();
