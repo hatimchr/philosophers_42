@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/24 18:41:32 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/24 22:31:17 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void philo_printer(t_philo *philo, int indx)
 {
     if (!pthread_mutex_lock(&philo->menu->print_mutex))
     {
-        if (philo->menu->end_simulation)
+        if (philo->menu->end_simulation && indx != 6)
         {
             pthread_mutex_unlock(&philo->menu->print_mutex);
             return;
@@ -136,7 +136,10 @@ void philo_printer(t_philo *philo, int indx)
 int check_death(t_philo *philo)
 {
     if (philo->menu->end_simulation)
+    {
         return (0);
+    }
+    printf("        im here\n");
     if ((ft_get_time() - philo->last_meal) >= philo->menu->death)
     {
         philo->menu->end_simulation = true;
