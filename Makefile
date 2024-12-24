@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -pthread
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -pthread
 RM = rm -rf
 
 PHILO = philo

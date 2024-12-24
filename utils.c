@@ -6,13 +6,13 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/15 15:17:57 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/24 15:24:30 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosopher.h"
 
-t_philo	philo;
+// t_philo	philo;
 
 int	ft_atoi(const char *str)
 {
@@ -117,14 +117,15 @@ void	philo_printer(t_philo *philo, int indx)
 		if (indx == 2)
 		{
 			/* code */
-			printf("\033[0;32m%lld %d is eating for %ld-th time\033[0m\n", ft_get_time() - philo->simulation_start, philo->id, philo->meal_cnt);
-			usleep(philo->menu->eat); // eating
+			printf("\033[0;32m%lld %lld %d is eating for %ld-th time\033[0m\n", ft_get_time() - philo->simulation_start, ft_get_time() - philo->last_meal, philo->id, philo->meal_cnt);
+			philo->last_meal = ft_get_time();
+			ft_philo_wait_time(philo, philo->menu->eat); // eating
 		}
 		else if (indx == 3)
 		{
 			/* code */
 			printf("\033[0;34m%lld %d is sleeping\033[0m\n", ft_get_time() - philo->simulation_start, philo->id);
-			usleep(philo->menu->sleep);
+			ft_philo_wait_time(philo, philo->menu->sleep);
 		}
 		else if (indx == 4)
 		{
@@ -153,10 +154,10 @@ void	philo_printer(t_philo *philo, int indx)
 //lme3e9ol
 int	check_death(t_philo *philo)
 {
-	usleep(150);
+	
 	if (philo->menu->end_simulation)
 		return (0);
-	if ((ft_get_time() - philo->simulation_start) >= philo->menu->death)
+	if ((ft_get_time() - philo->last_meal) >= philo->menu->death)
 	{
 		/* code */
 		philo->menu->end_simulation = true;
@@ -175,6 +176,20 @@ int	check_death(t_philo *philo)
 	}
 	
 	return (1);
+}
+
+int    ft_philo_wait_time(t_philo *philo, t_time wait_time)
+{
+    t_time    time;
+
+    time = ft_get_time();
+    while (ft_get_time() - time < wait_time)
+    {
+        if (check_death(philo))
+            return (1);
+        usleep(100);
+    }
+    return (0);
 }
 
 void *routine(t_philo *philo)

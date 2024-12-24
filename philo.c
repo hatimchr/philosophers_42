@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:05 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/14 22:47:13 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/24 11:00:30 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ int main(int ac, char **av)
         table.philos[i].left_fork = &table.forks[i];
         table.philos[i].right_fork = &table.forks[(i + 1) % table.total];
         table.philos[i].simulation_start = ft_get_time();
+        table.philos[i].last_meal = ft_get_time();
     }
     // creat threads
     i = 0;

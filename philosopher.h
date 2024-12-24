@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:12 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/14 21:52:08 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/24 12:51:09 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,6 @@ int		ft_putchar(char c);
 int		ft_putstr(char *s);
 void	*routine();
 t_time	ft_get_time(void);
+int    ft_philo_wait_time(t_philo *philo, t_time wait_time);
 
 #endif
