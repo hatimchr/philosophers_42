@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/24 15:24:30 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/24 15:57:42 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,30 +152,23 @@ void	philo_printer(t_philo *philo, int indx)
 	}
 }
 //lme3e9ol
-int	check_death(t_philo *philo)
+int check_death(t_philo *philo)
 {
-	
-	if (philo->menu->end_simulation)
-		return (0);
-	if ((ft_get_time() - philo->last_meal) >= philo->menu->death)
-	{
-		/* code */
-		philo->menu->end_simulation = true;
-		philo_printer(philo, 6);
-		pthread_mutex_unlock(&philo->menu->print_mutex); 
-		return (0);
-	}
-	if ((philo->menu->meal_limit) 
-		&& philo->meal_cnt == philo->menu->meal_limit)
-	{
-		philo->menu->end_simulation = true;
-		philo_printer(philo, 5);
-		pthread_mutex_unlock(&philo->menu->print_mutex); 
-		return (0);
-		// exit (0);
-	}
-	
-	return (1);
+    if (philo->menu->end_simulation)
+        return (0);
+    if ((ft_get_time() - philo->last_meal) >= philo->menu->death)
+    {
+        philo->menu->end_simulation = true;
+        philo_printer(philo, 6);
+        return (0);
+    }
+    if ((philo->menu->meal_limit) && philo->meal_cnt == philo->menu->meal_limit)
+    {
+        philo->menu->end_simulation = true;
+        philo_printer(philo, 5);
+        return (0);
+    }
+    return (1);
 }
 
 int    ft_philo_wait_time(t_philo *philo, t_time wait_time)
@@ -192,38 +185,37 @@ int    ft_philo_wait_time(t_philo *philo, t_time wait_time)
     return (0);
 }
 
-void *routine(t_philo *philo)
+void *routine(void *arg)
 {
-	// static int i;
-	
-	if (philo->id % 2 && check_death(philo))
-		philo_printer(philo, 3);
-    // I'll be back for you
-    while (!philo->menu->end_simulation && check_death(philo))
-	{
-        // Implement the philosopher's actions here	
-		// Pick up the forks
-		if (fork_is_avalaible(philo) != 0 && check_death(philo))
-		{
-			++philo->meal_cnt;
-			philo_printer(philo, 2);
-			// philo->simulation_start = ft_get_time() - philo->simulation_start;
-			release_fork(philo); // Put down the forks
-		}
-        // Sleep
-		if (check_death(philo))
-		{
-			// printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
-			philo_printer(philo, 3);
-		}
-		if (check_death(philo))
-		{
-			// printf("\033[0;34m%d is sleeping\033[0m\n", philo->id);
-			philo_printer(philo, 4);
-		}
-		// verify end simulation
-        // Think
-			// philo_printer(philo, 4);
+    t_philo *philo = (t_philo *)arg;
+
+    while (!philo->menu->end_simulation)
+    {
+        // Philosopher is thinking
+        philo_printer(philo, 1);
+
+        // Philosopher is trying to pick up forks
+        pthread_mutex_lock(&philo->left_fork->fork);
+        philo_printer(philo, 4);
+        pthread_mutex_lock(&philo->right_fork->fork);
+        philo_printer(philo, 4);
+
+        // Philosopher is eating
+        philo_printer(philo, 2);
+        philo->meal_cnt++;
+        philo->last_meal = ft_get_time();
+
+        // Philosopher is putting down forks
+        pthread_mutex_unlock(&philo->right_fork->fork);
+        pthread_mutex_unlock(&philo->left_fork->fork);
+
+        // Philosopher is sleeping
+        philo_printer(philo, 3);
+        ft_philo_wait_time(philo, philo->menu->sleep);
+
+        // Check if philosopher has died
+        if (!check_death(philo))
+            break;
     }
-    return NULL;
+    return (NULL);
 }
