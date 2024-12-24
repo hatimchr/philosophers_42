@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/24 16:02:48 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/24 18:41:32 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,15 +182,20 @@ void *routine(void *arg)
         philo_printer(philo, 4);
 
         // Philosopher is eating
+        if (!check_death(philo))
+            break;
         philo_printer(philo, 2);
         philo->meal_cnt++;
         philo->last_meal = ft_get_time();
+        ft_philo_wait_time(philo, philo->menu->eat);
 
         // Philosopher is putting down forks
         pthread_mutex_unlock(&philo->right_fork->fork);
         pthread_mutex_unlock(&philo->left_fork->fork);
 
         // Philosopher is sleeping
+        if (!check_death(philo))
+            break;
         philo_printer(philo, 3);
         ft_philo_wait_time(philo, philo->menu->sleep);
 
