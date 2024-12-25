@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/24 22:37:17 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/25 11:31:17 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,21 +56,6 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-int fork_is_avalaible(t_philo *philo) 
-{
-	if (pthread_mutex_lock(&philo->left_fork->fork) != 0)
-    // printf("%d has taken a left fork\n", philo->id);
-	return 0;
-
-    if (pthread_mutex_lock(&philo->right_fork->fork) != 0) 
-	{
-		pthread_mutex_unlock(&philo->left_fork->fork);
-        // printf("%d has released a fork\n", philo->id);
-        return 0;
-    }
-	
-    return 1;
-}
 
 int print_is_avalaible(t_philo *philo) 
 {
@@ -130,6 +115,25 @@ void philo_printer(t_philo *philo, int indx)
         pthread_mutex_unlock(&philo->menu->print_mutex);
     }
 }
+
+int fork_is_avalaible(t_philo *philo) 
+{
+    if (pthread_mutex_lock(&philo->left_fork->fork) == 0)
+    {
+        philo_printer(philo, 4);
+        if (pthread_mutex_lock(&philo->right_fork->fork) == 0) 
+        {
+            philo_printer(philo, 4);
+            return 1;
+        }
+        else
+        {
+            pthread_mutex_unlock(&philo->left_fork->fork);
+        }
+    }
+    return 0;
+}
+
 //lme3e9ol
 int check_death(t_philo *philo)
 {
@@ -137,7 +141,7 @@ int check_death(t_philo *philo)
     {
         return (0);
     }
-    printf("        im here\n");
+    usleep(100);
     if ((ft_get_time() - philo->last_meal) >= philo->menu->death)
     {
         philo->menu->end_simulation = true;
@@ -177,10 +181,8 @@ void *routine(void *arg)
         philo_printer(philo, 1);
 
         // Philosopher is trying to pick up forks
-        pthread_mutex_lock(&philo->left_fork->fork);
-        philo_printer(philo, 4);
-        pthread_mutex_lock(&philo->right_fork->fork);
-        philo_printer(philo, 4);
+        fork_is_avalaible(philo);
+		philo_printer(philo, 4);
 
         // Philosopher is eating
         if (!check_death(philo))
