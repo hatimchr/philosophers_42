@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 10:29:54 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/27 21:49:49 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/27 22:08:57 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,7 @@ int	ft_check_death(t_philo *philo)
 	}
 	if (im_dead(philo))
 	{
-		pthread_mutex_unlock(philo->death);
-		return (0);
+		return (1);
 	}
 	return (0);
 }

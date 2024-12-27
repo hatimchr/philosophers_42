@@ -18,7 +18,7 @@ $(PHILO): $(PL_OBJ)
 	@echo "\033[0;32mphilo Compiled successfully\033[0m"
 
 clean:
-	@echo "\033[0;31mCleaning up...\033[0m"
+	@echo "\033[0;31mCleaning up.....\033[0m"
 	@$(RM) $(PL_OBJ)
 
 fclean: clean

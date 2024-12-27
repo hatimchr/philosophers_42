@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:05 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/27 11:59:23 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/27 22:08:37 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	main(int ac, char **av)
 	ft_args_init(philo, ac, av);
 	ft_mutex_init(philo, forks, death);
 	ft_create_threads(philo);
-	printf("\n%d", philo->meals_count);
 	ft_free(philo, forks, death);
 	return (0);
 }
