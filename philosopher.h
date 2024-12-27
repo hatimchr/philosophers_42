@@ -6,10 +6,9 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:12 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/27 11:09:33 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/27 11:59:33 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef PHILOSOPHER_H
 # define PHILOSOPHER_H
