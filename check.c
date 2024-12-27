@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 10:32:00 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/27 11:03:04 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/27 21:17:48 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@ void	ft_philo_eat(t_philo *philo)
 	pthread_mutex_lock(philo->right_fork);
 	if (ft_check_death(philo))
 		return ;
-	ft_philo_print(philo, "has taken a fork ", 0);
-	pthread_mutex_lock(philo->death);
-	philo->meals_count++;
-	pthread_mutex_unlock(philo->death);
+	ft_philo_print(philo, "has taken a fork", 0);
 	ft_philo_print(philo, "is eating", 0);
-	ft_philo_wait_time(philo, philo->time_to_eat);
 	pthread_mutex_lock(philo->death);
 	philo->last_meal = ft_get_time();
+	pthread_mutex_unlock(philo->death);
+	ft_philo_wait_time(philo, philo->time_to_eat);
+	pthread_mutex_lock(philo->death);
+	philo->meals_count++;
 	pthread_mutex_unlock(philo->death);
 	if (ft_check_death(philo))
 		return ;

@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/27 10:29:54 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/27 11:13:11 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/27 21:49:49 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,22 +62,42 @@ void	*philo_routine(void *args)
 	return (NULL);
 }
 
-int	ft_check_death(t_philo *philo)
+int	im_dead(t_philo *philo)
 {
-	if (philo->meals_count == philo->must_eat)
-		return (1);
-	pthread_mutex_lock(philo->death);
 	if (*philo->check_dead)
 	{
 		pthread_mutex_unlock(philo->death);
 		return (1);
 	}
 	pthread_mutex_unlock(philo->death);
-	if (ft_get_time() - philo->last_meal > \
-		philo->time_to_die)
+	if (ft_get_time() - philo->last_meal > philo->time_to_die)
 	{
 		ft_philo_print(philo, "died", 1);
 		return (1);
+	}
+	return (0);
+}
+
+int	ft_check_death(t_philo *philo)
+{
+	static int	full;
+
+	pthread_mutex_lock(philo->death);
+	if (philo->meals_count == philo->must_eat)
+	{
+		full++;
+		philo->meals_count = -1;
+		if (full == philo->number_of_philo)
+		{
+			*philo->check_dead = 1;
+			pthread_mutex_unlock(philo->death);
+			return (1);
+		}
+	}
+	if (im_dead(philo))
+	{
+		pthread_mutex_unlock(philo->death);
+		return (0);
 	}
 	return (0);
 }
