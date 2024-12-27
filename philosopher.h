@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/22 21:17:12 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/26 21:14:22 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/27 11:09:33 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_philo
 	int				id;
 	int				must_eat;
 	int				number_of_philo;
-	int				total_eaten;
+	int				meals_count;
 	int				*check_dead;
 	t_time			time_to_die;
 	t_time			time_to_eat;
@@ -45,7 +45,7 @@ int		ft_check_death(t_philo *philo);
 int		ft_philo_wait_time(t_philo *philo, t_time wait_time);
 long	ft_atol(const char *str);
 t_time	ft_get_time(void);
-void	*ft_philo_check(void *args);
+void	*philo_routine(void *args);
 void	ft_philo_eat(t_philo *philo);
 void	ft_philo_sleep(t_philo *philo);
 void	ft_philo_think(t_philo *philo);

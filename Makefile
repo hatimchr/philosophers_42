@@ -5,7 +5,7 @@ RM = rm -rf
 PHILO = philo
 PHILO_BONUS = philo_bonus
 
-MANDATORY = philo.c utils.c
+MANDATORY = philo.c utils.c check.c routine.c
 PL_OBJ = $(MANDATORY:.c=.o)
 
 all: $(PHILO)

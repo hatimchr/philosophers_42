@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/26 21:08:49 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/27 11:03:04 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	ft_args_init(t_philo *philo, int ac, char **av)
 			philo[i].must_eat = -1;
 		philo[i].last_meal = ft_get_time();
 		philo[i].start_time = ft_get_time();
-		philo[i].total_eaten = 0;
+		philo[i].meals_count = 0;
 		philo[i].check_dead = check_dead;
 		i++;
 	}
@@ -51,11 +51,6 @@ void	ft_mutex_init(t_philo *philo, pthread_mutex_t *forks, \
 	{
 		philo[i].left_fork = &forks[i];
 		philo[i].right_fork = &forks[(i + 1) % philo->number_of_philo];
-		i++;
-	}
-	i = 0;
-	while (i < philo->number_of_philo)
-	{
 		pthread_mutex_init(philo[i].left_fork, NULL);
 		pthread_mutex_init(philo[i].right_fork, NULL);
 		philo[i].death = death;
