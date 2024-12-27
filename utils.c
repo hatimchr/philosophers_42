@@ -6,7 +6,7 @@
 /*   By: hchair <hchair@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 22:00:01 by hchair            #+#    #+#             */
-/*   Updated: 2024/12/25 11:31:17 by hchair           ###   ########.fr       */
+/*   Updated: 2024/12/26 21:08:49 by hchair           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,71 +14,106 @@
 
 // t_philo	philo;
 
-int	ft_atoi(const char *str)
+void	ft_args_init(t_philo *philo, int ac, char **av)
 {
+	int	*check_dead;
 	int	i;
-	int	rst;
-	int	mlt;
 
 	i = 0;
-	mlt = 1;
-	rst = 0;
-	while (str[i] == 32 || (str[i] <= 13 && str[i] >= 9))
+	check_dead = malloc(sizeof(int));
+	*check_dead = 0;
+	while (i < ft_atol(av[1]))
+	{
+		philo[i].id = i;
+		philo[i].number_of_philo = ft_atol(av[1]);
+		philo[i].time_to_die = ft_atol(av[2]);
+		philo[i].time_to_eat = ft_atol(av[3]);
+		philo[i].time_to_sleep = ft_atol(av[4]);
+		if (ac == 6)
+			philo[i].must_eat = ft_atol(av[5]);
+		else
+			philo[i].must_eat = -1;
+		philo[i].last_meal = ft_get_time();
+		philo[i].start_time = ft_get_time();
+		philo[i].total_eaten = 0;
+		philo[i].check_dead = check_dead;
 		i++;
-	if (str[i] == 45 || str[i] == 43)
-	{
-		if (str[i] == 45)
-			mlt = -1;
-		i += 1;
 	}
-	while (str[i] >= 48 && str[i] <= 57)
-	{
-		rst = (rst + (str[i] - '0'));
-		if (str[i + 1] >= 48 && str[i + 1] <= 57)
-			rst = rst * 10;
-		else if (str[i + 1] != '\0' && !(str[i + 1] >= 48 && str[i + 1] <= 57))
-			return (-2);
-		i += 1;
-	}
-	return (rst * mlt);
 }
 
-
-int	ft_strlen(char *str)
+void	ft_mutex_init(t_philo *philo, pthread_mutex_t *forks, \
+		pthread_mutex_t *death)
 {
 	int	i;
 
 	i = 0;
-	if (!str)
+	while (i < philo->number_of_philo)
+	{
+		philo[i].left_fork = &forks[i];
+		philo[i].right_fork = &forks[(i + 1) % philo->number_of_philo];
+		i++;
+	}
+	i = 0;
+	while (i < philo->number_of_philo)
+	{
+		pthread_mutex_init(philo[i].left_fork, NULL);
+		pthread_mutex_init(philo[i].right_fork, NULL);
+		philo[i].death = death;
+		i++;
+	}
+	pthread_mutex_init(philo->death, NULL);
+}
+
+int	ft_args_check(int ac, char **av)
+{
+	int	i;
+	int	j;
+
+	if (ac == 5 || ac == 6)
+	{
+		i = 1;
+		while (av[i])
+		{
+			j = 0;
+			while (av[i][j])
+			{
+				if (!(av[i][j] >= '0' && av[i][j] <= '9'))
+					return (0);
+				if (av[1][0] == '0')
+					return (0);
+				j++;
+			}
+			i++;
+		}
+	}
+	else
 		return (0);
-	while (str[i] != '\0')
+	return (1);
+}
+
+long	ft_atol(const char *str)
+{
+	int		i;
+	long	res;
+	int		sign;
+
+	i = 0;
+	res = 0;
+	sign = 1;
+	while (str[i] <= 32)
 		i++;
-	return (i);
-}
-
-
-int print_is_avalaible(t_philo *philo) 
-{
-	if (pthread_mutex_lock(&philo->menu->print_mutex) != 0)
-    // printf("%d has taken a left fork\n", philo->id);
-		return 0;
-
-    // if (pthread_mutex_lock(&philo->right_fork->fork) != 0) 
-	// {
-	// 	pthread_mutex_unlock(&philo->left_fork->fork);
-    //     // printf("%d has released a fork\n", philo->id);
-    //     return 0;
-    // }
-	
-    return 1;
-}
-
-void	release_fork(t_philo *philo)
-{
-	// printf("%d has relased a fork\n", philo->id); 
-	pthread_mutex_unlock(&philo->left_fork->fork);
-	pthread_mutex_unlock(&philo->right_fork->fork);
-	// printf("%d has relased a fork\n", philo->id); 
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = res * 10 + str[i] - 48;
+		i++;
+	}
+	return (res * sign);
 }
 
 t_time	ft_get_time(void)
@@ -89,126 +124,4 @@ t_time	ft_get_time(void)
 	gettimeofday(&tp, NULL);
 	time = tp.tv_sec * 1000 + tp.tv_usec / 1000;
 	return (time);
-}
-
-void philo_printer(t_philo *philo, int indx)
-{
-    if (!pthread_mutex_lock(&philo->menu->print_mutex))
-    {
-        if (philo->menu->end_simulation && indx != 6)
-        {
-            pthread_mutex_unlock(&philo->menu->print_mutex);
-            return;
-        }
-
-        if (indx == 1)
-            printf("%lld %d is thinking\n", ft_get_time() - philo->simulation_start, philo->id);
-        else if (indx == 2)
-            printf("%lld %d is eating\n", ft_get_time() - philo->simulation_start, philo->id);
-        else if (indx == 3)
-            printf("%lld %d is sleeping\n", ft_get_time() - philo->simulation_start, philo->id);
-        else if (indx == 4)
-            printf("%lld %d has taken a fork\n", ft_get_time() - philo->simulation_start, philo->id);
-        else if (indx == 6)
-            printf("\033[0;31m%lld %d died\033[0m\n", ft_get_time() - philo->simulation_start, philo->id);
-
-        pthread_mutex_unlock(&philo->menu->print_mutex);
-    }
-}
-
-int fork_is_avalaible(t_philo *philo) 
-{
-    if (pthread_mutex_lock(&philo->left_fork->fork) == 0)
-    {
-        philo_printer(philo, 4);
-        if (pthread_mutex_lock(&philo->right_fork->fork) == 0) 
-        {
-            philo_printer(philo, 4);
-            return 1;
-        }
-        else
-        {
-            pthread_mutex_unlock(&philo->left_fork->fork);
-        }
-    }
-    return 0;
-}
-
-//lme3e9ol
-int check_death(t_philo *philo)
-{
-    if (philo->menu->end_simulation)
-    {
-        return (0);
-    }
-    usleep(100);
-    if ((ft_get_time() - philo->last_meal) >= philo->menu->death)
-    {
-        philo->menu->end_simulation = true;
-        philo_printer(philo, 6);
-        return (0);
-    }
-    if ((philo->menu->meal_limit) && philo->meal_cnt == philo->menu->meal_limit)
-    {
-        philo->menu->end_simulation = true;
-        philo_printer(philo, 5);
-        return (0);
-    }
-    return (1);
-}
-
-int    ft_philo_wait_time(t_philo *philo, t_time wait_time)
-{
-    t_time    time;
-
-    time = ft_get_time();
-    while (ft_get_time() - time < wait_time)
-    {
-        if (check_death(philo))
-            return (1);
-        usleep(100);
-    }
-    return (0);
-}
-
-void *routine(void *arg)
-{
-    t_philo *philo = (t_philo *)arg;
-
-    while (!philo->menu->end_simulation)
-    {
-        // Philosopher is thinking
-        philo_printer(philo, 1);
-
-        // Philosopher is trying to pick up forks
-        fork_is_avalaible(philo);
-		philo_printer(philo, 4);
-
-        // Philosopher is eating
-        if (!check_death(philo))
-        {
-            pthread_mutex_unlock(&philo->right_fork->fork);
-            pthread_mutex_unlock(&philo->left_fork->fork);
-            break;
-        }
-        philo_printer(philo, 2);
-        philo->meal_cnt++;
-        philo->last_meal = ft_get_time();
-        ft_philo_wait_time(philo, philo->menu->eat);
-
-        // Philosopher is putting down forks
-        pthread_mutex_unlock(&philo->right_fork->fork);
-        pthread_mutex_unlock(&philo->left_fork->fork);
-
-        // Philosopher is sleeping
-        if (!check_death(philo))
-            break;
-        philo_printer(philo, 3);
-        ft_philo_wait_time(philo, philo->menu->sleep);
-
-        // Check if philosopher has died
-        if (!check_death(philo))
-            break;
-    }
-    return (NULL);
 }
